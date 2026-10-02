@@ -25,10 +25,11 @@ The prototype currently includes:
 - A visible capsule placeholder for the player, viewed from behind.
 - Walking, mouse look, sprinting, and jumping.
 - A stamina bar that drains while sprinting and recovers when sprinting stops.
+- Hunger and thirst bars that slowly decrease over time.
 
 Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
 
-The player and environment are simple placeholders. Health, hunger, thirst, creatures, crafting, weapons, animation, and a larger world remain planned work.
+The player and environment are simple placeholders. Food and water pickups, health effects, creatures, crafting, weapons, animation, and a larger world remain planned work.
 
 ## Technology
 
@@ -56,7 +57,9 @@ Everdawn/
     │   └── world/main.tscn
     └── scripts/
         ├── player/player_controller.gd
-        └── survival/stamina.gd
+        └── survival/
+            ├── stamina.gd
+            └── vital_needs.gd
 ```
 
 ## Getting started
