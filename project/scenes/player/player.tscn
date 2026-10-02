@@ -27,8 +27,10 @@ position = Vector3(0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_body")
 
 [node name="CameraPivot" type="Node3D" parent="."]
-position = Vector3(0, 1.55, 0)
+position = Vector3(0, 1.45, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+position = Vector3(0, 0, 5.5)
+rotation_degrees = Vector3(-10, 0, 0)
 current = true
-fov = 80.0
+fov = 75.0
