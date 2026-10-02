@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://scripts/survival/stamina.gd" id="2_stamina"]
@@ -16,6 +16,9 @@ height = 1.8
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
 albedo_color = Color(0.72, 0.77, 0.63, 1)
 roughness = 0.9
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_interaction"]
+radius = 3.0
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_controller")
@@ -43,5 +46,13 @@ position = Vector3(0, 0, 5.5)
 rotation_degrees = Vector3(-10, 0, 0)
 current = true
 fov = 75.0
+
+[node name="InteractionArea" type="Area3D" parent="."]
+position = Vector3(0, 1.0, 0)
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("SphereShape3D_interaction")
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
