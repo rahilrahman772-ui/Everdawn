@@ -1,3 +1,51 @@
-[gd_scene format=3 uid="uid://4s1m62fo5m5e"]
+[gd_scene load_steps=8 format=3]
 
-[node name="world" type="Node3D" unique_id=1791367349]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.08, 0.15, 0.24, 1)
+sky_horizon_color = Color(0.56, 0.66, 0.72, 1)
+ground_bottom_color = Color(0.11, 0.14, 0.1, 1)
+ground_horizon_color = Color(0.32, 0.38, 0.31, 1)
+
+[sub_resource type="Sky" id="Sky_environment"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 2
+sky = SubResource("Sky_environment")
+ambient_light_source = 2
+ambient_light_energy = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.22, 0.31, 0.2, 1)
+roughness = 1.0
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, 35, 0)
+shadow_enabled = true
+light_energy = 1.2
+
+[node name="Ground" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.5, 0)
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector3(0, 0, 4)
