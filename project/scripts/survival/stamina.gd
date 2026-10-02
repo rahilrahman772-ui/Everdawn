@@ -1,3 +1,4 @@
+class_name StaminaComponent
 extends Node
 
 signal stamina_changed(current: float, maximum: float)
