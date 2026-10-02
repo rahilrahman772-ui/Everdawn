@@ -19,14 +19,16 @@ These are project goals, not claims about features already implemented.
 
 ## Current prototype
 
-Initial prototype code adds:
+The prototype currently includes:
 
-- A small 3D outdoor test area with simple tree and color markers.
+- A small 3D outdoor test area with simple visual landmarks.
 - A visible capsule placeholder for the player, viewed from behind.
 - Walking, mouse look, sprinting, and jumping.
-- Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
+- A stamina bar that drains while sprinting and recovers when sprinting stops.
 
-The player and environment are simple placeholders to make movement easier to see. Survival needs, creatures, crafting, weapons, animation, and a larger world remain planned work.
+Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
+
+The player and environment are simple placeholders. Health, hunger, thirst, creatures, crafting, weapons, animation, and a larger world remain planned work.
 
 ## Technology
 
@@ -50,12 +52,12 @@ Everdawn/
     ├── assets/
     ├── scenes/
     │   ├── player/player.tscn
+    │   ├── ui/game_hud.tscn
     │   └── world/main.tscn
     └── scripts/
-        └── player/player_controller.gd
+        ├── player/player_controller.gd
+        └── survival/stamina.gd
 ```
-
-See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for what belongs in each area.
 
 ## Getting started
 
