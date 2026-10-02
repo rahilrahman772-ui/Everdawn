@@ -1,0 +1,27 @@
+# Godot 4 editor cache and imported assets
+.godot/
+
+# Godot export presets may contain signing or store credentials.
+# Add a sanitized export_presets.cfg only if the project needs shared presets.
+export.cfg
+export_presets.cfg
+
+# C# / .NET generated files (if a C# project is added later)
+.mono/
+[Bb]in/
+[Oo]bj/
+
+# Build output
+build/
+dist/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary and backup files
+*.tmp
+*.bak
+*.swp
+*~
