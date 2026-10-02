@@ -15,6 +15,8 @@ func _ready() -> void:
 
 
 func update_stamina(delta: float, wants_to_sprint: bool) -> bool:
+	var previous_stamina := current_stamina
+
 	if wants_to_sprint:
 		if not exhausted and current_stamina > 0.0:
 			current_stamina = maxf(
@@ -30,5 +32,7 @@ func update_stamina(delta: float, wants_to_sprint: bool) -> bool:
 			current_stamina + recovery_per_second * delta
 		)
 
-	stamina_changed.emit(current_stamina, maximum_stamina)
+	if not is_equal_approx(previous_stamina, current_stamina):
+		stamina_changed.emit(current_stamina, maximum_stamina)
+
 	return wants_to_sprint and not exhausted
