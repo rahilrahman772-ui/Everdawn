@@ -24,12 +24,12 @@ The prototype currently includes:
 - A small 3D outdoor test area with simple visual landmarks.
 - A visible capsule placeholder for the player, viewed from behind.
 - Walking, mouse look, sprinting, and jumping.
-- A stamina bar that drains while sprinting and recovers when sprinting stops.
-- Hunger and thirst bars that slowly decrease over time.
+- Stamina that drains while sprinting and recovers when sprinting stops.
+- Hunger and thirst that slowly decrease, with berry and water pickups to restore them.
 
-Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
+Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, **E** to collect a nearby pickup, and **Escape** to release the mouse.
 
-The player and environment are simple placeholders. Food and water pickups, health effects, creatures, crafting, weapons, animation, and a larger world remain planned work.
+The player and environment are simple placeholders. Health effects, creatures, crafting, weapons, animation, and a larger world remain planned work.
 
 ## Technology
 
@@ -54,12 +54,15 @@ Everdawn/
     ├── scenes/
     │   ├── player/player.tscn
     │   ├── ui/game_hud.tscn
-    │   └── world/main.tscn
+    │   └── world/
+    │       ├── main.tscn
+    │       └── resource_pickup.tscn
     └── scripts/
         ├── player/player_controller.gd
-        └── survival/
-            ├── stamina.gd
-            └── vital_needs.gd
+        ├── survival/
+        │   ├── stamina.gd
+        │   └── vital_needs.gd
+        └── world/resource_pickup.gd
 ```
 
 ## Getting started
