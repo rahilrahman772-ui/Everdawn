@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/world/resource_pickup.tscn" id="2_pickup"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.08, 0.15, 0.24, 1)
@@ -77,6 +78,16 @@ shape = SubResource("BoxShape3D_ground")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector3(0, 0, 4)
+
+[node name="BerryPickup" parent="." instance=ExtResource("2_pickup")]
+position = Vector3(-1, 0, -1)
+kind = 0
+restore_amount = 30.0
+
+[node name="WaterPickup" parent="." instance=ExtResource("2_pickup")]
+position = Vector3(2.5, 0, -7)
+kind = 1
+restore_amount = 35.0
 
 [node name="TreeTrunk_A" type="MeshInstance3D" parent="."]
 position = Vector3(-5, 1.2, -8)
