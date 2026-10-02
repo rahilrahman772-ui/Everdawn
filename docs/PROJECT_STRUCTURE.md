@@ -28,7 +28,7 @@ project/
 - `scenes/world/main.tscn` is the starting test area.
 - `scenes/player/player.tscn` contains the player body, camera, stamina component, and HUD.
 - `scenes/ui/game_hud.tscn` displays current stamina.
-- `scripts/player/player_controller.gd` handles first-person movement and sprinting.
+- `scripts/player/player_controller.gd` handles third-person movement and sprinting.
 - `scripts/survival/stamina.gd` manages sprint drain and recovery.
 
 The folders are expanded as the game needs them. Keep related scenes and scripts easy to find. Godot's generated `.godot/` cache is ignored by Git.
