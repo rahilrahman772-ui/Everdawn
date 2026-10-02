@@ -21,11 +21,12 @@ These are project goals, not claims about features already implemented.
 
 Initial prototype code adds:
 
-- A small 3D outdoor test area.
-- A first-person player with mouse look, walking, sprinting, and jumping.
+- A small 3D outdoor test area with simple tree and color markers.
+- A visible capsule placeholder for the player, viewed from behind.
+- Walking, mouse look, sprinting, and jumping.
 - Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
 
-The prototype uses simple placeholder shapes and colors. Survival needs, creatures, crafting, weapons, and a larger world remain planned work.
+The player and environment are simple placeholders to make movement easier to see. Survival needs, creatures, crafting, weapons, animation, and a larger world remain planned work.
 
 ## Technology
 
