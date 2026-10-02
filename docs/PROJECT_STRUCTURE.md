@@ -1,6 +1,6 @@
 # Project structure
 
-The layout below is a starting point for the Godot project. The folders are placeholders until gameplay files are added. Create the Godot project itself in `project/`; its `project.godot` file will live there.
+The Godot project lives in `project/`; its `project.godot` file is at that folder's root.
 
 ```text
 project/
@@ -23,10 +23,10 @@ project/
     └── survival/     # Health and survival needs
 ```
 
-## A few conventions
+## Current prototype
 
-- Keep a scene and its closely related script near each other when that makes the feature easier to understand.
-- Use clear names that describe what a file does, such as `player_controller.gd`.
-- Put reusable art and audio in `assets/`; keep scene-specific resources with their scene when appropriate.
-- Avoid adding a system before there is a small playable need for it.
-- Let Godot generate its project cache. The `.godot/` directory is ignored by Git and should not be committed.
+- `scenes/world/main.tscn` is the starting test area.
+- `scenes/player/player.tscn` contains the player body and camera.
+- `scripts/player/player_controller.gd` handles first-person movement.
+
+The folders are expanded as the game needs them. Keep related scenes and scripts easy to find, and avoid adding systems before a playable feature needs them. Godot's generated `.godot/` cache is ignored by Git.
