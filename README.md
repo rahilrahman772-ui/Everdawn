@@ -15,7 +15,17 @@ The planned experience brings together:
 - **Crafting:** gather materials and turn them into useful equipment and supplies.
 - **Environmental systems:** build toward changing weather and a day-and-night cycle.
 
-These are project goals, not claims about features already implemented. Everdawn is at the early setup stage.
+These are project goals, not claims about features already implemented.
+
+## Current prototype
+
+The first playable foundation is in place:
+
+- A small 3D outdoor test area.
+- A first-person player with mouse look, walking, sprinting, and jumping.
+- Controls: **WASD** to move, **Shift** to sprint, **Space** to jump, and **Escape** to release the mouse.
+
+The prototype uses simple placeholder shapes and colors. Survival needs, creatures, crafting, weapons, and a larger world remain planned work.
 
 ## Technology
 
@@ -26,10 +36,6 @@ These are project goals, not claims about features already implemented. Everdawn
 
 The project starts with GDScript. Native extensions are not required to begin development.
 
-## Project status
-
-The repository currently contains the initial project documentation and folder layout. A runnable Godot project has **not** been created yet. The next step is to create the Godot project in the `project/` folder using the Godot Project Manager.
-
 ## Repository layout
 
 ```text
@@ -38,41 +44,24 @@ Everdawn/
 ├── .gitignore
 ├── docs/
 │   └── PROJECT_STRUCTURE.md
-└── project/                 # Godot project will be created here
+└── project/
+    ├── project.godot
     ├── assets/
-    │   ├── audio/
-    │   ├── materials/
-    │   ├── models/
-    │   └── textures/
     ├── scenes/
-    │   ├── enemies/
-    │   ├── player/
-    │   ├── ui/
-    │   └── world/
+    │   ├── player/player.tscn
+    │   └── world/main.tscn
     └── scripts/
-        ├── combat/
-        ├── enemies/
-        ├── environment/
-        ├── inventory/
-        ├── player/
-        └── survival/
+        └── player/player_controller.gd
 ```
 
 See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for what belongs in each area.
 
 ## Getting started
 
-1. Install **Godot 4**.
-2. Clone or download this repository.
-3. In Godot's Project Manager, create a project in the repository's `project/` folder.
-4. Keep the renderer and other project settings at their defaults for now.
-5. Open the project and begin with a small playable prototype before expanding the world.
-
-Until step 3 is complete, this repository is a documented scaffold rather than a runnable game.
-
-## Development approach
-
-Everdawn will be built in small, understandable steps. Early work should establish a playable character and a small test area before expanding into survival systems, creatures, crafting, and larger environments.
+1. Install Godot 4.
+2. Clone this repository.
+3. In Godot's Project Manager, import the project by selecting `project/project.godot`.
+4. Run the project with **F6** or the play button after the project is imported.
 
 ## License
 
