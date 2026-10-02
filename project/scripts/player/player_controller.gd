@@ -7,9 +7,14 @@ extends CharacterBody3D
 @export var mouse_sensitivity: float = 0.0025
 
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var stamina_component: Node = $Stamina
+@onready var stamina_component: StaminaComponent = $Stamina
+@onready var needs_component: VitalNeeds = $Needs
 @onready var stamina_bar: ProgressBar = $HUD/StaminaBar
 @onready var stamina_label: Label = $HUD/StaminaLabel
+@onready var hunger_bar: ProgressBar = $HUD/HungerBar
+@onready var hunger_label: Label = $HUD/HungerLabel
+@onready var thirst_bar: ProgressBar = $HUD/ThirstBar
+@onready var thirst_label: Label = $HUD/ThirstLabel
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -27,6 +32,15 @@ func _ready() -> void:
 		stamina_component.current_stamina,
 		stamina_component.maximum_stamina
 	)
+
+	needs_component.needs_changed.connect(_on_needs_changed)
+	_on_needs_changed(
+		needs_component.current_hunger,
+		needs_component.maximum_hunger,
+		needs_component.current_thirst,
+		needs_component.maximum_thirst
+	)
+
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
@@ -48,6 +62,7 @@ func _physics_process(delta: float) -> void:
 		and input_direction.length_squared() > 0.001
 	)
 	var is_sprinting: bool = stamina_component.update_stamina(delta, wants_to_sprint)
+	needs_component.advance(delta)
 	var speed := sprint_speed if is_sprinting else walk_speed
 
 	velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
@@ -63,6 +78,31 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 	if maximum > 0.0:
 		percentage = roundi(current / maximum * 100.0)
 	stamina_label.text = "STAMINA %d%%" % percentage
+
+
+func _on_needs_changed(
+	hunger: float,
+	max_hunger: float,
+	thirst: float,
+	max_thirst: float
+) -> void:
+	_update_needs_bar(hunger_bar, hunger_label, hunger, max_hunger, "HUNGER")
+	_update_needs_bar(thirst_bar, thirst_label, thirst, max_thirst, "THIRST")
+
+
+func _update_needs_bar(
+	bar: ProgressBar,
+	label: Label,
+	value: float,
+	maximum: float,
+	need_name: String
+) -> void:
+	bar.max_value = maximum
+	bar.value = value
+	var percentage := 0
+	if maximum > 0.0:
+		percentage = roundi(value / maximum * 100.0)
+	label.text = "%s %d%%" % [need_name, percentage]
 
 
 func _unhandled_input(event: InputEvent) -> void:
