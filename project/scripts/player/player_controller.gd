@@ -15,8 +15,11 @@ extends CharacterBody3D
 @onready var hunger_label: Label = $HUD/HungerLabel
 @onready var thirst_bar: ProgressBar = $HUD/ThirstBar
 @onready var thirst_label: Label = $HUD/ThirstLabel
+@onready var interaction_area: Area3D = $InteractionArea
+@onready var interaction_prompt: Label = $HUD/InteractionPrompt
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var nearby_pickups: Array[ResourcePickup] = []
 
 
 func _ready() -> void:
@@ -26,12 +29,13 @@ func _ready() -> void:
 	_add_key_action(&"move_right", KEY_D)
 	_add_key_action(&"jump", KEY_SPACE)
 	_add_key_action(&"sprint", KEY_SHIFT)
+	_add_key_action(&"interact", KEY_E)
+
+	interaction_area.area_entered.connect(_on_pickup_entered)
+	interaction_area.area_exited.connect(_on_pickup_exited)
 
 	stamina_component.stamina_changed.connect(_on_stamina_changed)
-	_on_stamina_changed(
-		stamina_component.current_stamina,
-		stamina_component.maximum_stamina
-	)
+	_on_stamina_changed(stamina_component.current_stamina, stamina_component.maximum_stamina)
 
 	needs_component.needs_changed.connect(_on_needs_changed)
 	_on_needs_changed(
@@ -106,7 +110,10 @@ func _update_needs_bar(
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_E:
+		_interact_with_nearest_pickup()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		camera_pivot.rotation.x = clamp(
 			camera_pivot.rotation.x - event.relative.y * mouse_sensitivity,
@@ -117,6 +124,46 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _on_pickup_entered(area: Area3D) -> void:
+	if area is ResourcePickup and not nearby_pickups.has(area):
+		nearby_pickups.append(area)
+		_update_interaction_prompt()
+
+
+func _on_pickup_exited(area: Area3D) -> void:
+	if area is ResourcePickup:
+		nearby_pickups.erase(area)
+		_update_interaction_prompt()
+
+
+func _update_interaction_prompt() -> void:
+	var pickup := _nearest_pickup()
+	interaction_prompt.visible = pickup != null
+	if pickup != null:
+		interaction_prompt.text = "E  -  Pick up %s" % pickup.display_name
+
+
+func _interact_with_nearest_pickup() -> void:
+	var pickup := _nearest_pickup()
+	if pickup != null:
+		pickup.interact(self)
+		nearby_pickups.erase(pickup)
+		_update_interaction_prompt()
+
+
+func _nearest_pickup() -> ResourcePickup:
+	var closest: ResourcePickup = null
+	var closest_distance := INF
+	for pickup: ResourcePickup in nearby_pickups:
+		if not is_instance_valid(pickup):
+			continue
+		var distance := global_position.distance_squared_to(pickup.global_position)
+		if distance < closest_distance:
+			closest = pickup
+			closest_distance = distance
+	return closest
 
 
 func _add_key_action(action: StringName, key: Key) -> void:
