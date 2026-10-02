@@ -7,6 +7,9 @@ extends CharacterBody3D
 @export var mouse_sensitivity: float = 0.0025
 
 @onready var camera_pivot: Node3D = $CameraPivot
+@onready var stamina_component: Node = $Stamina
+@onready var stamina_bar: ProgressBar = $HUD/StaminaBar
+@onready var stamina_label: Label = $HUD/StaminaLabel
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -19,6 +22,11 @@ func _ready() -> void:
 	_add_key_action(&"jump", KEY_SPACE)
 	_add_key_action(&"sprint", KEY_SHIFT)
 
+	stamina_component.stamina_changed.connect(_on_stamina_changed)
+	_on_stamina_changed(
+		stamina_component.current_stamina,
+		stamina_component.maximum_stamina
+	)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
@@ -35,12 +43,26 @@ func _physics_process(delta: float) -> void:
 		&"move_back"
 	)
 	var direction := (transform.basis * Vector3(input_direction.x, 0.0, input_direction.y)).normalized()
-	var speed := sprint_speed if Input.is_action_pressed(&"sprint") else walk_speed
+	var wants_to_sprint := (
+		Input.is_action_pressed(&"sprint")
+		and input_direction.length_squared() > 0.001
+	)
+	var is_sprinting: bool = stamina_component.update_stamina(delta, wants_to_sprint)
+	var speed := sprint_speed if is_sprinting else walk_speed
 
 	velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
 	velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
 
 	move_and_slide()
+
+
+func _on_stamina_changed(current: float, maximum: float) -> void:
+	stamina_bar.max_value = maximum
+	stamina_bar.value = current
+	var percentage := 0
+	if maximum > 0.0:
+		percentage = roundi(current / maximum * 100.0)
+	stamina_label.text = "STAMINA %d%%" % percentage
 
 
 func _unhandled_input(event: InputEvent) -> void:
