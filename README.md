@@ -19,7 +19,7 @@ These are project goals, not claims about features already implemented.
 
 ## Current prototype
 
-The first playable foundation is in place:
+Initial prototype code adds:
 
 - A small 3D outdoor test area.
 - A first-person player with mouse look, walking, sprinting, and jumping.
@@ -61,7 +61,7 @@ See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for what belongs in e
 1. Install Godot 4.
 2. Clone this repository.
 3. In Godot's Project Manager, import the project by selecting `project/project.godot`.
-4. Run the project with **F6** or the play button after the project is imported.
+4. Run the main scene with **F5**.
 
 ## License
 
