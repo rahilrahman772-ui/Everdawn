@@ -15,12 +15,19 @@ extends CharacterBody3D
 @onready var hunger_label: Label = $HUD/HungerLabel
 @onready var thirst_bar: ProgressBar = $HUD/ThirstBar
 @onready var thirst_label: Label = $HUD/ThirstLabel
+@onready var inventory_counts: Label = $HUD/InventoryCounts
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_prompt: Label = $HUD/InteractionPrompt
 @onready var character_animator: CharacterAnimator = $CharacterAnimator
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var nearby_pickups: Array[ResourcePickup] = []
+var inventory: Dictionary = {
+	&"berries": 0,
+	&"water": 0,
+	&"wood": 0,
+	&"stone": 0,
+}
 
 
 func _ready() -> void:
@@ -45,6 +52,7 @@ func _ready() -> void:
 		needs_component.current_thirst,
 		needs_component.maximum_thirst
 	)
+	_update_inventory_display()
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -75,6 +83,20 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	character_animator.set_locomotion(input_direction, is_sprinting, delta)
+
+
+func collect_resource(item_id: StringName) -> void:
+	inventory[item_id] = int(inventory.get(item_id, 0)) + 1
+	_update_inventory_display()
+
+
+func _update_inventory_display() -> void:
+	inventory_counts.text = "Berries %d  |  Water %d  |  Wood %d  |  Stone %d" % [
+		int(inventory.get(&"berries", 0)),
+		int(inventory.get(&"water", 0)),
+		int(inventory.get(&"wood", 0)),
+		int(inventory.get(&"stone", 0)),
+	]
 
 
 func _on_stamina_changed(current: float, maximum: float) -> void:
