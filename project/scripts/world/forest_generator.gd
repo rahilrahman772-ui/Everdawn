@@ -128,7 +128,9 @@ func _create_terrain() -> void:
 	var terrain_body := StaticBody3D.new()
 	terrain_body.name = "TerrainCollision"
 	var terrain_shape := CollisionShape3D.new()
-	terrain_shape.shape = terrain_mesh.create_trimesh_shape()
+	var terrain_collision := terrain_mesh.create_trimesh_shape() as ConcavePolygonShape3D
+	terrain_collision.backface_collision = true
+	terrain_shape.shape = terrain_collision
 	terrain_body.add_child(terrain_shape)
 	add_child(terrain_body)
 
@@ -305,7 +307,7 @@ func _random_tree_location(rng: RandomNumberGenerator) -> Vector2:
 func _place_player_and_resources() -> void:
 	var player := get_node_or_null("Player") as Node3D
 	if player != null:
-		player.position.y = _terrain_height(player.position.x, player.position.z)
+		player.position.y = _terrain_height(player.position.x, player.position.z) + 1.0
 
 	for child in get_children():
 		if child is ResourcePickup:
