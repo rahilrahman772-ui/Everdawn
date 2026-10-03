@@ -4,6 +4,7 @@ extends Node3D
 const IDLE_SCENE := "res://assets/models/characters/Remy_Idle.fbx"
 const WALK_SCENE := "res://assets/models/characters/Remy_Walk.fbx"
 const RUN_SCENE := "res://assets/models/characters/Remy_Run.fbx"
+const TURN_SPEED := 10.0
 
 var _animation_player: AnimationPlayer
 var _current_state: StringName
@@ -48,12 +49,16 @@ func _ready() -> void:
 	(get_parent().get_node("BodyMesh") as MeshInstance3D).visible = false
 
 
-func set_locomotion(is_moving: bool, is_sprinting: bool) -> void:
+func set_locomotion(input_direction: Vector2, is_sprinting: bool, delta: float) -> void:
 	if not _ready_for_animation:
 		return
 
+	if input_direction.length_squared() > 0.001:
+		var target_rotation := atan2(input_direction.x, input_direction.y)
+		rotation.y = lerp_angle(rotation.y, target_rotation, minf(1.0, TURN_SPEED * delta))
+
 	var next_state: StringName = &"idle"
-	if is_moving:
+	if input_direction.length_squared() > 0.001:
 		next_state = &"run" if is_sprinting else &"walk"
 
 	if next_state == _current_state:
