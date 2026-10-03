@@ -11,6 +11,12 @@ const RIVER_WIDTH := 9.0
 var _broad_noise := FastNoiseLite.new()
 var _detail_noise := FastNoiseLite.new()
 var _mountain_noise := FastNoiseLite.new()
+var _resource_locations := [
+	Vector2(-1.0, -1.0),
+	Vector2(2.5, -7.0),
+	Vector2(-1.5, -2.0),
+	Vector2(4.0, -4.0),
+]
 
 
 func _ready() -> void:
@@ -65,6 +71,8 @@ func _create_terrain() -> void:
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
 	var indices := PackedInt32Array()
+	indices.resize(TERRAIN_SEGMENTS * TERRAIN_SEGMENTS * 6)
+	var index_cursor := 0
 	vertices.resize(side_count * side_count)
 	normals.resize(side_count * side_count)
 	colors.resize(side_count * side_count)
@@ -89,10 +97,13 @@ func _create_terrain() -> void:
 			var top_right := top_left + 1
 			var bottom_left := top_left + side_count
 			var bottom_right := bottom_left + 1
-			indices.append_array(PackedInt32Array([
-				top_left, bottom_left, top_right,
-				top_right, bottom_left, bottom_right,
-			]))
+			indices[index_cursor] = top_left
+			indices[index_cursor + 1] = bottom_left
+			indices[index_cursor + 2] = top_right
+			indices[index_cursor + 3] = top_right
+			indices[index_cursor + 4] = bottom_left
+			indices[index_cursor + 5] = bottom_right
+			index_cursor += 6
 
 	var surface_arrays := []
 	surface_arrays.resize(Mesh.ARRAY_MAX)
@@ -137,6 +148,7 @@ func _create_river() -> void:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var indices := PackedInt32Array()
+	indices.resize(segments * 6)
 
 	for segment in range(segments + 1):
 		var z := -WORLD_SIZE * 0.5 + WORLD_SIZE * float(segment) / segments
@@ -152,10 +164,13 @@ func _create_river() -> void:
 	for segment in segments:
 		var first := segment * 2
 		var next := first + 2
-		indices.append_array(PackedInt32Array([
-			first, first + 1, next,
-			first + 1, next + 1, next,
-		]))
+		var index_cursor := segment * 6
+		indices[index_cursor] = first
+		indices[index_cursor + 1] = first + 1
+		indices[index_cursor + 2] = next
+		indices[index_cursor + 3] = first + 1
+		indices[index_cursor + 4] = next + 1
+		indices[index_cursor + 5] = next
 
 	var surface_arrays := []
 	surface_arrays.resize(Mesh.ARRAY_MAX)
@@ -264,12 +279,6 @@ func _add_tree_collision(
 
 
 func _random_tree_location(rng: RandomNumberGenerator) -> Vector2:
-	var resource_locations := [
-		Vector2(-1.0, -1.0),
-		Vector2(2.5, -7.0),
-		Vector2(-1.5, -2.0),
-		Vector2(4.0, -4.0),
-	]
 	var half_size := WORLD_SIZE * 0.5 - 5.0
 
 	for attempt in range(TREE_COUNT * 20):
@@ -283,7 +292,7 @@ func _random_tree_location(rng: RandomNumberGenerator) -> Vector2:
 			continue
 
 		var near_resource := false
-		for resource_location: Vector2 in resource_locations:
+		for resource_location: Vector2 in _resource_locations:
 			if location.distance_squared_to(resource_location) < RESOURCE_CLEAR_RADIUS * RESOURCE_CLEAR_RADIUS:
 				near_resource = true
 				break
