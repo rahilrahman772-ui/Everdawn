@@ -65,7 +65,7 @@ func set_locomotion(input_direction: Vector2, is_sprinting: bool, delta: float) 
 		return
 
 	_current_state = next_state
-	_animation_player.play(StringName("Everdawn/%s" % next_state))
+	_animation_player.play(StringName("Everdawn/%s" % next_state), 0.2)
 
 
 func _add_animation_from_scene(
