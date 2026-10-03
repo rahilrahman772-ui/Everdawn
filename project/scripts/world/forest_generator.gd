@@ -70,12 +70,14 @@ func _create_terrain() -> void:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
+	var height_samples := PackedFloat32Array()
 	var indices := PackedInt32Array()
 	indices.resize(TERRAIN_SEGMENTS * TERRAIN_SEGMENTS * 6)
 	var index_cursor := 0
 	vertices.resize(side_count * side_count)
 	normals.resize(side_count * side_count)
 	colors.resize(side_count * side_count)
+	height_samples.resize(side_count * side_count)
 
 	for z_index in side_count:
 		for x_index in side_count:
@@ -84,6 +86,7 @@ func _create_terrain() -> void:
 			var height := _terrain_height(x, z)
 			var vertex_index := z_index * side_count + x_index
 			vertices[vertex_index] = Vector3(x, height, z)
+			height_samples[vertex_index] = height / step_size
 			normals[vertex_index] = Vector3(
 				_terrain_height(x - 1.0, z) - _terrain_height(x + 1.0, z),
 				2.0,
@@ -128,8 +131,11 @@ func _create_terrain() -> void:
 	var terrain_body := StaticBody3D.new()
 	terrain_body.name = "TerrainCollision"
 	var terrain_shape := CollisionShape3D.new()
-	var terrain_collision := terrain_mesh.create_trimesh_shape() as ConcavePolygonShape3D
-	terrain_collision.backface_collision = true
+	var terrain_collision := HeightMapShape3D.new()
+	terrain_collision.map_width = side_count
+	terrain_collision.map_depth = side_count
+	terrain_collision.map_data = height_samples
+	terrain_shape.scale = Vector3.ONE * step_size
 	terrain_shape.shape = terrain_collision
 	terrain_body.add_child(terrain_shape)
 	add_child(terrain_body)
