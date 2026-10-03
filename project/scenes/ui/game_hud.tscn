@@ -56,6 +56,22 @@ step = 1.0
 show_percentage = false
 value = 100.0
 
+[node name="InventoryLabel" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 220.0
+offset_right = 240.0
+offset_bottom = 244.0
+theme_override_font_sizes/font_size = 16
+text = "INVENTORY"
+
+[node name="InventoryCounts" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 246.0
+offset_right = 520.0
+offset_bottom = 270.0
+theme_override_font_sizes/font_size = 15
+text = "Berries 0  |  Water 0  |  Wood 0  |  Stone 0"
+
 [node name="InteractionPrompt" type="Label" parent="."]
 visible = false
 anchor_left = 0.5
