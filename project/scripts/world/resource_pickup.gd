@@ -1,16 +1,38 @@
 class_name ResourcePickup
 extends Area3D
 
-enum Kind { FOOD, WATER }
+enum Kind { FOOD, WATER, WOOD, STONE }
 
 @export var kind: Kind = Kind.FOOD
 @export var restore_amount: float = 30.0
 
 @onready var visual: MeshInstance3D = $Visual
 
+var inventory_id: StringName:
+	get:
+		match kind:
+			Kind.FOOD:
+				return &"berries"
+			Kind.WATER:
+				return &"water"
+			Kind.WOOD:
+				return &"wood"
+			Kind.STONE:
+				return &"stone"
+		return &"unknown"
+
 var display_name: String:
 	get:
-		return "Wild berries" if kind == Kind.FOOD else "Fresh water"
+		match kind:
+			Kind.FOOD:
+				return "Wild berries"
+			Kind.WATER:
+				return "Fresh water"
+			Kind.WOOD:
+				return "Wood"
+			Kind.STONE:
+				return "Stone"
+		return "Resource"
 
 
 func _ready() -> void:
@@ -18,20 +40,32 @@ func _ready() -> void:
 	collision_mask = 0
 
 	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(0.78, 0.12, 0.16) if kind == Kind.FOOD else Color(0.12, 0.48, 0.85)
-	material.roughness = 0.35 if kind == Kind.WATER else 0.8
+	match kind:
+		Kind.FOOD:
+			material.albedo_color = Color(0.78, 0.12, 0.16)
+			visual.scale = Vector3(0.8, 1.0, 0.8)
+		Kind.WATER:
+			material.albedo_color = Color(0.12, 0.48, 0.85)
+			visual.scale = Vector3(0.7, 1.15, 0.7)
+		Kind.WOOD:
+			material.albedo_color = Color(0.46, 0.27, 0.12)
+			visual.scale = Vector3(1.2, 0.55, 0.55)
+		Kind.STONE:
+			material.albedo_color = Color(0.42, 0.45, 0.47)
+			visual.scale = Vector3(0.8, 0.7, 0.8)
+	material.roughness = 0.8 if kind != Kind.WATER else 0.35
 	visual.material_override = material
-	visual.scale = Vector3(0.8, 1.0, 0.8) if kind == Kind.FOOD else Vector3(0.7, 1.15, 0.7)
 
 
 func interact(player: Node) -> void:
-	var needs := player.get_node_or_null("Needs") as VitalNeeds
-	if needs == null:
-		return
+	if player.has_method("collect_resource"):
+		player.call("collect_resource", inventory_id)
 
-	if kind == Kind.FOOD:
-		needs.restore_hunger(restore_amount)
-	else:
-		needs.restore_thirst(restore_amount)
+	var needs := player.get_node_or_null("Needs") as VitalNeeds
+	if needs != null:
+		if kind == Kind.FOOD:
+			needs.restore_hunger(restore_amount)
+		elif kind == Kind.WATER:
+			needs.restore_thirst(restore_amount)
 
 	queue_free()
