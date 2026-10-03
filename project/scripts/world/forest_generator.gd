@@ -46,10 +46,10 @@ func _terrain_height(x: float, z: float) -> float:
 	var detail := _detail_noise.get_noise_2d(x, z) * 1.8
 	var distance_from_start := Vector2(x, z).length()
 	var mountain_mask := _smoothstep(100.0, 430.0, distance_from_start)
-	var ridges := pow(abs(_mountain_noise.get_noise_2d(x, z)), 1.7) * 105.0 * mountain_mask
+	var ridges: float = pow(absf(_mountain_noise.get_noise_2d(x, z)), 1.7) * 105.0 * mountain_mask
 	var surrounding_land := broad + detail + ridges
 
-	var river_distance := abs(x - _river_center_x(z))
+	var river_distance: float = absf(x - _river_center_x(z))
 	var bank_blend := _smoothstep(0.0, 34.0, river_distance)
 	var riverbed := -1.7 + broad * 0.05
 	return lerpf(riverbed, surrounding_land, bank_blend)
