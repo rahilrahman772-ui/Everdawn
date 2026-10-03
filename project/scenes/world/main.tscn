@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/world/resource_pickup.tscn" id="2_pickup"]
@@ -19,16 +19,6 @@ sky = SubResource("Sky_environment")
 ambient_light_source = 2
 ambient_light_energy = 0.45
 
-[sub_resource type="BoxMesh" id="BoxMesh_ground"]
-size = Vector3(1000, 1, 1000)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(1000, 1, 1000)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
-albedo_color = Color(0.22, 0.31, 0.2, 1)
-roughness = 1.0
-
 [node name="World" type="Node3D"]
 script = ExtResource("3_forest")
 
@@ -39,16 +29,6 @@ environment = SubResource("Environment_world")
 rotation_degrees = Vector3(-48, 35, 0)
 shadow_enabled = true
 light_energy = 1.2
-
-[node name="Ground" type="StaticBody3D" parent="."]
-position = Vector3(0, -0.5, 0)
-
-[node name="GroundMesh" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("BoxMesh_ground")
-surface_material_override/0 = SubResource("StandardMaterial3D_ground")
-
-[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("BoxShape3D_ground")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector3(0, 0, 4)
