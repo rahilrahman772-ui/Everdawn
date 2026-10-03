@@ -89,6 +89,14 @@ position = Vector3(2.5, 0, -7)
 kind = 1
 restore_amount = 35.0
 
+[node name="WoodPickup" parent="." instance=ExtResource("2_pickup")]
+position = Vector3(-1.5, 0, -2)
+kind = 2
+
+[node name="StonePickup" parent="." instance=ExtResource("2_pickup")]
+position = Vector3(4, 0, -4)
+kind = 3
+
 [node name="TreeTrunk_A" type="MeshInstance3D" parent="."]
 position = Vector3(-5, 1.2, -8)
 mesh = SubResource("CylinderMesh_tree_trunk")
