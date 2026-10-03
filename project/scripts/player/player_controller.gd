@@ -74,7 +74,7 @@ func _physics_process(delta: float) -> void:
 	velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
 
 	move_and_slide()
-	character_animator.set_locomotion(input_direction.length_squared() > 0.001, is_sprinting)
+	character_animator.set_locomotion(input_direction, is_sprinting, delta)
 
 
 func _on_stamina_changed(current: float, maximum: float) -> void:
