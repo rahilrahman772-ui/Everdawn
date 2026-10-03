@@ -111,3 +111,5 @@ func _random_tree_location(rng: RandomNumberGenerator) -> Vector2:
 				break
 		if not near_resource:
 			return location
+
+	return Vector2.ZERO
