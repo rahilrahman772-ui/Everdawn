@@ -17,6 +17,7 @@ extends CharacterBody3D
 @onready var thirst_label: Label = $HUD/ThirstLabel
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_prompt: Label = $HUD/InteractionPrompt
+@onready var character_animator: CharacterAnimator = $CharacterAnimator
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var nearby_pickups: Array[ResourcePickup] = []
@@ -73,6 +74,7 @@ func _physics_process(delta: float) -> void:
 	velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
 
 	move_and_slide()
+	character_animator.set_locomotion(input_direction.length_squared() > 0.001, is_sprinting)
 
 
 func _on_stamina_changed(current: float, maximum: float) -> void:
