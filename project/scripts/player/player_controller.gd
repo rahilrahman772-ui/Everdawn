@@ -1,5 +1,8 @@
 extends CharacterBody3D
 
+const BERRY_RESTORE := 30.0
+const WATER_RESTORE := 35.0
+
 @export var walk_speed: float = 5.0
 @export var sprint_speed: float = 8.0
 @export var acceleration: float = 20.0
@@ -16,6 +19,14 @@ extends CharacterBody3D
 @onready var thirst_bar: ProgressBar = $HUD/ThirstBar
 @onready var thirst_label: Label = $HUD/ThirstLabel
 @onready var inventory_counts: Label = $HUD/InventoryCounts
+@onready var inventory_panel: PanelContainer = $HUD/InventoryPanel
+@onready var berries_count: Label = $HUD/InventoryPanel/InventoryLayout/ResourceGrid/BerriesCount
+@onready var water_count: Label = $HUD/InventoryPanel/InventoryLayout/ResourceGrid/WaterCount
+@onready var wood_count: Label = $HUD/InventoryPanel/InventoryLayout/ResourceGrid/WoodCount
+@onready var stone_count: Label = $HUD/InventoryPanel/InventoryLayout/ResourceGrid/StoneCount
+@onready var eat_berries_button: Button = $HUD/InventoryPanel/InventoryLayout/ItemActions/EatBerriesButton
+@onready var drink_water_button: Button = $HUD/InventoryPanel/InventoryLayout/ItemActions/DrinkWaterButton
+@onready var close_inventory_button: Button = $HUD/InventoryPanel/InventoryLayout/TitleRow/CloseButton
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_prompt: Label = $HUD/InteractionPrompt
 @onready var character_animator: CharacterAnimator = $CharacterAnimator
@@ -41,6 +52,9 @@ func _ready() -> void:
 
 	interaction_area.area_entered.connect(_on_pickup_entered)
 	interaction_area.area_exited.connect(_on_pickup_exited)
+	eat_berries_button.pressed.connect(_eat_berries)
+	drink_water_button.pressed.connect(_drink_water)
+	close_inventory_button.pressed.connect(_close_inventory)
 
 	stamina_component.stamina_changed.connect(_on_stamina_changed)
 	_on_stamina_changed(stamina_component.current_stamina, stamina_component.maximum_stamina)
@@ -91,12 +105,47 @@ func collect_resource(item_id: StringName) -> void:
 
 
 func _update_inventory_display() -> void:
-	inventory_counts.text = "Berries %d  |  Water %d  |  Wood %d  |  Stone %d" % [
-		int(inventory.get(&"berries", 0)),
-		int(inventory.get(&"water", 0)),
-		int(inventory.get(&"wood", 0)),
-		int(inventory.get(&"stone", 0)),
+	var berries := int(inventory.get(&"berries", 0))
+	var water := int(inventory.get(&"water", 0))
+	var wood := int(inventory.get(&"wood", 0))
+	var stone := int(inventory.get(&"stone", 0))
+	inventory_counts.text = "I  |  Berries %d  ·  Water %d  ·  Wood %d  ·  Stone %d" % [
+		berries, water, wood, stone,
 	]
+	berries_count.text = "Berries       %d" % berries
+	water_count.text = "Water         %d" % water
+	wood_count.text = "Wood          %d" % wood
+	stone_count.text = "Stone         %d" % stone
+	eat_berries_button.disabled = berries == 0
+	drink_water_button.disabled = water == 0
+
+
+func _eat_berries() -> void:
+	if int(inventory.get(&"berries", 0)) <= 0:
+		return
+	inventory[&"berries"] -= 1
+	needs_component.restore_hunger(BERRY_RESTORE)
+	_update_inventory_display()
+
+
+func _drink_water() -> void:
+	if int(inventory.get(&"water", 0)) <= 0:
+		return
+	inventory[&"water"] -= 1
+	needs_component.restore_thirst(WATER_RESTORE)
+	_update_inventory_display()
+
+
+func _toggle_inventory() -> void:
+	inventory_panel.visible = not inventory_panel.visible
+	Input.mouse_mode = (
+		Input.MOUSE_MODE_VISIBLE if inventory_panel.visible else Input.MOUSE_MODE_CAPTURED
+	)
+
+
+func _close_inventory() -> void:
+	inventory_panel.visible = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _on_stamina_changed(current: float, maximum: float) -> void:
@@ -134,6 +183,17 @@ func _update_needs_bar(
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_I:
+		_toggle_inventory()
+		get_viewport().set_input_as_handled()
+		return
+
+	if inventory_panel.visible:
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			_close_inventory()
+			get_viewport().set_input_as_handled()
+		return
+
 	if event is InputEventKey and event.pressed and event.keycode == KEY_E:
 		_interact_with_nearest_pickup()
 		get_viewport().set_input_as_handled()
