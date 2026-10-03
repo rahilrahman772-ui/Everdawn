@@ -74,15 +74,17 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-	elif Input.is_action_just_pressed(&"jump"):
+	elif not inventory_panel.visible and Input.is_action_just_pressed(&"jump"):
 		velocity.y = jump_velocity
 
-	var input_direction := Input.get_vector(
-		&"move_left",
-		&"move_right",
-		&"move_forward",
-		&"move_back"
-	)
+	var input_direction := Vector2.ZERO
+	if not inventory_panel.visible:
+		input_direction = Input.get_vector(
+			&"move_left",
+			&"move_right",
+			&"move_forward",
+			&"move_back"
+		)
 	var direction := (transform.basis * Vector3(input_direction.x, 0.0, input_direction.y)).normalized()
 	var wants_to_sprint := (
 		Input.is_action_pressed(&"sprint")
@@ -92,8 +94,12 @@ func _physics_process(delta: float) -> void:
 	needs_component.advance(delta)
 	var speed := sprint_speed if is_sprinting else walk_speed
 
-	velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
-	velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
+	if inventory_panel.visible:
+		velocity.x = 0.0
+		velocity.z = 0.0
+	else:
+		velocity.x = move_toward(velocity.x, direction.x * speed, acceleration * delta)
+		velocity.z = move_toward(velocity.z, direction.z * speed, acceleration * delta)
 
 	move_and_slide()
 	character_animator.set_locomotion(input_direction, is_sprinting, delta)
