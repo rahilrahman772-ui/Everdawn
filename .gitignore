@@ -1,6 +1,9 @@
 # Godot 4 editor cache and imported assets
 .godot/
 
+# Mixamo source files stay local; do not redistribute raw assets
+/project/assets/models/characters/Remy_*.fbx
+
 # Godot export presets may contain signing or store credentials.
 # Add a sanitized export_presets.cfg only if the project needs shared presets.
 export.cfg
