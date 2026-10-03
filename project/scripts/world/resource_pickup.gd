@@ -4,7 +4,6 @@ extends Area3D
 enum Kind { FOOD, WATER, WOOD, STONE }
 
 @export var kind: Kind = Kind.FOOD
-@export var restore_amount: float = 30.0
 
 @onready var visual: MeshInstance3D = $Visual
 
@@ -60,12 +59,4 @@ func _ready() -> void:
 func interact(player: Node) -> void:
 	if player.has_method("collect_resource"):
 		player.call("collect_resource", inventory_id)
-
-	var needs := player.get_node_or_null("Needs") as VitalNeeds
-	if needs != null:
-		if kind == Kind.FOOD:
-			needs.restore_hunger(restore_amount)
-		elif kind == Kind.WATER:
-			needs.restore_thirst(restore_amount)
-
 	queue_free()
