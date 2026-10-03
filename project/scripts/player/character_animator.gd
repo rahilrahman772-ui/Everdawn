@@ -14,7 +14,11 @@ func _ready() -> void:
 	if not ResourceLoader.exists(IDLE_SCENE):
 		return
 
-	var model := (load(IDLE_SCENE) as PackedScene).instantiate()
+	var idle_scene := load(IDLE_SCENE) as PackedScene
+	if idle_scene == null:
+		return
+
+	var model := idle_scene.instantiate()
 	add_child(model)
 	_animation_player = _find_animation_player(model)
 	if _animation_player == null:
